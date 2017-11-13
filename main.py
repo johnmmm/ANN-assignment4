@@ -51,7 +51,18 @@ def build_vocab(path, data):
     print("Loading word vectors...")
     #todo: load word vector from 'vector.txt' to embed, where the value of each line is the word vector of the word in vocab_list
     embed = []
-    
+    vector_name = 'vector.txt'
+    dict_embed = {}
+    with open('%s/%s' % (path, vector_name)) as f:
+        for idx, line in enumerate(f):
+            tokens = line.split(' ')
+            dict_embed[tokens[0]] = tokens[1:]
+    for idx, word in enumerate(vocab_list):
+        if word in dict_embed.keys():
+            embed.append(dict_embed[word])
+        else:
+            embed.append(list(np.zeros(FLAGS.embed_units)))
+
     embed = np.array(embed, dtype=np.float32)
     return vocab_list, embed
 
