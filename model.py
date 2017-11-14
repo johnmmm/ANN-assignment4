@@ -10,6 +10,14 @@ PAD_ID = 0
 UNK_ID = 1
 _START_VOCAB = ['_PAD', '_UNK']
 
+def weight_variable(shape):  # you can use this func to build new variables
+    initial = tf.truncated_normal(shape, stddev=0.1)
+    return tf.Variable(initial)
+
+def bias_variable(shape):  # you can use this func to build new variables
+    initial = tf.constant(0.1, shape=shape)
+    return tf.Variable(initial)
+
 class RNN(object):
     def __init__(self,
             num_symbols,
@@ -21,9 +29,9 @@ class RNN(object):
             learning_rate=0.5,
             max_gradient_norm=5.0):
         #todo: implement placeholders
-        self.texts = tf.placeholder()  # shape: batch*len
-        self.texts_length = tf.placeholder()  # shape: batch
-        self.labels = tf.placeholder()  # shape: batch
+        self.texts = tf.placeholder(tf.string, [None, None], name='texts')  # shape: batch*len
+        self.texts_length = tf.placeholder(tf.int64, [None], name='texts_length')  # shape: batch
+        self.labels = tf.placeholder(tf.int64, [None], 'labels')  # shape: batch
         
         self.symbol2index = MutableHashTable(
                 key_dtype=tf.string,
@@ -57,10 +65,15 @@ class RNN(object):
         if num_layers == 1:
             cell = BasicRNNCell(num_units)
         
-
+        print(self.embed_input.shape)
+        print(self.texts_length.shape)
         outputs, states = dynamic_rnn(cell, self.embed_input, self.texts_length, dtype=tf.float32, scope="rnn")
 
         #todo: implement unfinished networks
+        W_fc1 = weight_variable([cell.output_size, num_labels])
+        b_fc1 = bias_variable([num_labels])
+
+        logits = tf.matmul(states, W_fc1) + b_fc1
 
         self.loss = tf.reduce_sum(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=self.labels, logits=logits), name='loss')
         mean_loss = self.loss / tf.cast(tf.shape(self.labels)[0], dtype=tf.float32)

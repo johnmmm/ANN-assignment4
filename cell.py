@@ -19,7 +19,6 @@ class BasicRNNCell(tf.contrib.rnn.RNNCell):
         with tf.variable_scope(scope or "basic_rnn_cell", reuse=self._reuse):
             a=1
             #todo: implement the new_state calculation given inputs and state
-        new_state = []
         return new_state, new_state
 
 class GRUCell(tf.contrib.rnn.RNNCell):
