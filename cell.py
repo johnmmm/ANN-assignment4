@@ -17,8 +17,11 @@ class BasicRNNCell(tf.contrib.rnn.RNNCell):
 
     def __call__(self, inputs, state, scope=None):
         with tf.variable_scope(scope or "basic_rnn_cell", reuse=self._reuse):
-            a=1
             #todo: implement the new_state calculation given inputs and state
+            inputs_state = tf.concat([inputs, state], 1)
+            W1 = tf.get_variable('weight1', [inputs_state.get_shape().as_list()[1], self._num_units], tf.float32)
+            b1 = tf.get_variable('bias1', [self._num_units], tf.float32)
+            new_state = self._activation(tf.matmul(inputs_state, W1)+b1)
         return new_state, new_state
 
 class GRUCell(tf.contrib.rnn.RNNCell):
