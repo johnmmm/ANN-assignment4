@@ -13,7 +13,7 @@ tf.app.flags.DEFINE_boolean("is_train", True, "Set to False to inference.")
 tf.app.flags.DEFINE_boolean("read_graph", False, "Set to False to build graph.")
 tf.app.flags.DEFINE_integer("symbols", 18430, "vocabulary size.")
 tf.app.flags.DEFINE_integer("labels", 5, "Number of labels.")
-tf.app.flags.DEFINE_integer("epoch", 1e6, "Number of epoch.")
+tf.app.flags.DEFINE_integer("epoch", 30, "Number of epoch.")
 tf.app.flags.DEFINE_integer("embed_units", 300, "Size of word embedding.")
 tf.app.flags.DEFINE_integer("units", 512, "Size of each model layer.")
 tf.app.flags.DEFINE_integer("layers", 1, "Number of layers in the model.")
@@ -51,7 +51,18 @@ def build_vocab(path, data):
     print("Loading word vectors...")
     #todo: load word vector from 'vector.txt' to embed, where the value of each line is the word vector of the word in vocab_list
     embed = []
-    
+    vector_name = 'vector.txt'
+    dict_embed = {}
+    with open('%s/%s' % (path, vector_name)) as f:
+        for idx, line in enumerate(f):
+            tokens = line.split(' ')
+            dict_embed[tokens[0]] = tokens[1:]
+    for idx, word in enumerate(vocab_list):
+        if word in dict_embed.keys():
+            embed.append(dict_embed[word])
+        else:
+            embed.append(list(np.zeros(FLAGS.embed_units)))
+
     embed = np.array(embed, dtype=np.float32)
     return vocab_list, embed
 
