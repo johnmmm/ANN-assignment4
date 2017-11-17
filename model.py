@@ -63,12 +63,14 @@ class RNN(object):
 
         
         if num_layers == 1:
-            cell = BasicLSTMCell(num_units, num_units)
+            cell = GRUCell(num_units)
+            #cell = BasicLSTMCell(num_units, num_units)
             #cell = BasicRNNCell(num_units)
         
         print(self.embed_input.shape)
         print(self.texts_length.shape)
-        outputs, (_, states) = dynamic_rnn(cell, self.embed_input, self.texts_length, dtype=tf.float32, scope="rnn")
+        outputs, states = dynamic_rnn(cell, self.embed_input, self.texts_length, dtype=tf.float32, scope="rnn")
+        #outputs, (_, states) = dynamic_rnn(cell, self.embed_input, self.texts_length, dtype=tf.float32, scope="rnn")
 
         #todo: implement unfinished networks
         W_fc1 = weight_variable([cell.output_size, num_labels])
