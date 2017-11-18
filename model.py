@@ -76,14 +76,23 @@ class RNN(object):
         #todo: implement unfinished networks
         y_drop1 = tf.nn.dropout(states, keep_prob=keep_prob)
 
-        W_fc1 = weight_variable([cell.output_size, num_labels])
-        b_fc1 = bias_variable([num_labels])
+        # W_fc1 = weight_variable([cell.output_size, 300])
+        # b_fc1 = bias_variable([300])
 
-        h_fc1 = tf.matmul(y_drop1, W_fc1) + b_fc1
-        h_relu1 = tf.nn.relu(h_fc1)
+        # h_fc1 = tf.matmul(y_drop1, W_fc1) + b_fc1
+        # h_relu1 = tf.nn.sigmoid(h_fc1)
 
-        y_drop2 = tf.nn.dropout(h_relu1, keep_prob=keep_prob)
-        logits = y_drop2
+        # W_fc2 = weight_variable([300, num_labels])
+        # b_fc2 = bias_variable([num_labels])
+
+        # logits = tf.matmul(h_relu1, W_fc2) + b_fc2
+
+        y1 = tf.layers.dense(inputs = y_drop1, units = 256, activation = tf.nn.sigmoid)
+        y2 = tf.layers.dense(inputs = y1, units = num_labels)
+        logits = y2
+
+        # y_drop2 = tf.nn.dropout(h_relu1, keep_prob=keep_prob)
+        # logits = y_drop2
 
         self.loss = tf.reduce_sum(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=self.labels, logits=logits), name='loss')
         mean_loss = self.loss / tf.cast(tf.shape(self.labels)[0], dtype=tf.float32)
