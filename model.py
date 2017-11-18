@@ -27,7 +27,8 @@ class RNN(object):
             num_labels,
             embed,
             learning_rate=0.5,
-            max_gradient_norm=5.0):
+            max_gradient_norm=5.0
+            keep_prob=1.0):
         #todo: implement placeholders
         self.texts = tf.placeholder(tf.string, [None, None], name='texts')  # shape: batch*len
         self.texts_length = tf.placeholder(tf.int64, [None], name='texts_length')  # shape: batch
@@ -73,10 +74,16 @@ class RNN(object):
         #outputs, (_, states) = dynamic_rnn(cell, self.embed_input, self.texts_length, dtype=tf.float32, scope="rnn")
 
         #todo: implement unfinished networks
+        y_drop1 = tf.nn.dropout(states, keep_prob=keep_prob)
+
         W_fc1 = weight_variable([cell.output_size, num_labels])
         b_fc1 = bias_variable([num_labels])
 
-        logits = tf.matmul(states, W_fc1) + b_fc1
+        h_fc1 = tf.matmul(y_drop1, W_fc1) + b_fc1
+        h_relu1 = tf.nn.relu(h_fc1)
+
+        y_drop2 = tf.nn.dropout(h_relu1, keep_prob=keep_prob)
+        logits = y_drop2
 
         self.loss = tf.reduce_sum(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=self.labels, logits=logits), name='loss')
         mean_loss = self.loss / tf.cast(tf.shape(self.labels)[0], dtype=tf.float32)
