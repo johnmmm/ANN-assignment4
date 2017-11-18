@@ -64,9 +64,9 @@ class RNN(object):
 
         
         if num_layers == 1:
-            #cell = GRUCell(num_units)
+            cell = GRUCell(num_units)
             #cell = BasicLSTMCell(num_units, num_units)
-            cell = BasicRNNCell(num_units)
+            #cell = BasicRNNCell(num_units)
         
         print(self.embed_input.shape)
         print(self.texts_length.shape)

@@ -10,7 +10,7 @@ random.seed(1229)
 from model import RNN, _START_VOCAB
 
 tf.app.flags.DEFINE_boolean("is_train", True, "Set to False to inference.")
-tf.app.flags.DEFINE_boolean("read_graph", False, "Set to False to build graph.")
+tf.app.flags.DEFINE_boolean("read_graph", True, "Set to False to build graph.")
 tf.app.flags.DEFINE_integer("symbols", 18430, "vocabulary size.")
 tf.app.flags.DEFINE_integer("labels", 5, "Number of labels.")
 tf.app.flags.DEFINE_integer("epoch", 100, "Number of epoch.")
@@ -20,6 +20,7 @@ tf.app.flags.DEFINE_integer("layers", 1, "Number of layers in the model.")
 tf.app.flags.DEFINE_integer("batch_size", 16, "Batch size to use during training.")
 tf.app.flags.DEFINE_string("data_dir", "./data", "Data directory")
 tf.app.flags.DEFINE_string("train_dir", "./train", "Training directory.")
+tf.app.flags.DEFINE_string("graph_dir", "./log", "Graph directory.")
 tf.app.flags.DEFINE_boolean("log_parameters", True, "Set to True to show the parameters")
 tf.app.flags.DEFINE_float("learning_rate", 0.001, "The learning rate")
 tf.app.flags.DEFINE_float("keep_prob", 0.5, "To drop out something")
@@ -171,9 +172,13 @@ with tf.Session(config=config) as sess:
             summary_writer.add_summary(summary, epoch)
             print("epoch %d learning rate %.4f epoch-time %.4f loss %.8f accuracy [%.8f]" % (epoch, model.learning_rate.eval(), time.time()-start_time, loss, accuracy))
             #todo: implement the tensorboard code recording the statistics of development and test set
-            
             loss, accuracy = evaluate(model, sess, data_dev)
+            summary = tf.Summary()
+            summary.value.add(tag='loss/dev', simple_value=loss)
+            summary.value.add(tag='accuracy/dev', simple_value=accuracy)
+            summary_writer.add_summary(summary, epoch)
             print("        dev_set, loss %.8f, accuracy [%.8f]" % (loss, accuracy))
+            #record the best dev
             if accuracy > best_dev:
                 model.saver.save(sess, '%s/checkpoint' % FLAGS.train_dir, global_step=model.global_step)
                 best_dev = accuracy
@@ -181,6 +186,10 @@ with tf.Session(config=config) as sess:
             print("        best acc: [%.8f], best epoch: %d" % (best_dev, best_epoch))
 
             loss, accuracy = evaluate(model, sess, data_test)
+            summary = tf.Summary()
+            summary.value.add(tag='loss/test', simple_value=loss)
+            summary.value.add(tag='accuracy/test', simple_value=accuracy)
+            summary_writer.add_summary(summary, epoch)
             print("        test_set, loss %.8f, accuracy [%.8f]" % (loss, accuracy))
     else:
         data_train = load_data(FLAGS.data_dir, 'train.txt')
