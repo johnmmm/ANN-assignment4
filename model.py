@@ -27,7 +27,7 @@ class RNN(object):
             num_labels,
             embed,
             learning_rate=0.5,
-            max_gradient_norm=5.0
+            max_gradient_norm=5.0,
             keep_prob=1.0):
         #todo: implement placeholders
         self.texts = tf.placeholder(tf.string, [None, None], name='texts')  # shape: batch*len
@@ -64,9 +64,9 @@ class RNN(object):
 
         
         if num_layers == 1:
-            cell = GRUCell(num_units)
+            #cell = GRUCell(num_units)
             #cell = BasicLSTMCell(num_units, num_units)
-            #cell = BasicRNNCell(num_units)
+            cell = BasicRNNCell(num_units)
         
         print(self.embed_input.shape)
         print(self.texts_length.shape)
