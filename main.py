@@ -23,7 +23,7 @@ tf.app.flags.DEFINE_string("train_dir", "./train", "Training directory.")
 tf.app.flags.DEFINE_string("graph_dir", "./log", "Graph directory.")
 tf.app.flags.DEFINE_boolean("log_parameters", True, "Set to True to show the parameters")
 tf.app.flags.DEFINE_float("learning_rate", 0.003, "The learning rate")
-tf.app.flags.DEFINE_float("keep_prob", 0.7, "To drop out something")
+tf.app.flags.DEFINE_float("keep_prob", 0.6, "To drop out something")
 
 FLAGS = tf.app.flags.FLAGS
 
