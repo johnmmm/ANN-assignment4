@@ -9,20 +9,20 @@ random.seed(1229)
 
 from model import RNN, _START_VOCAB
 
-tf.app.flags.DEFINE_boolean("is_train", True, "Set to False to inference.")
-tf.app.flags.DEFINE_boolean("read_graph", True, "Set to False to build graph.")
+tf.app.flags.DEFINE_boolean("is_train", False, "Set to False to inference.")
+tf.app.flags.DEFINE_boolean("read_graph", False, "Set to False to build graph.")
 tf.app.flags.DEFINE_integer("symbols", 18430, "vocabulary size.")
 tf.app.flags.DEFINE_integer("labels", 5, "Number of labels.")
-tf.app.flags.DEFINE_integer("epoch", 150, "Number of epoch.")
+tf.app.flags.DEFINE_integer("epoch", 100, "Number of epoch.")
 tf.app.flags.DEFINE_integer("embed_units", 300, "Size of word embedding.")
 tf.app.flags.DEFINE_integer("units", 512, "Size of each model layer.")
 tf.app.flags.DEFINE_integer("layers", 1, "Number of layers in the model.")
 tf.app.flags.DEFINE_integer("batch_size", 16, "Batch size to use during training.")
 tf.app.flags.DEFINE_string("data_dir", "./data", "Data directory")
-tf.app.flags.DEFINE_string("train_dir", "./train", "Training directory.")
+tf.app.flags.DEFINE_string("train_dir", "./train_data/train-GRU-final2", "Training directory.")
 tf.app.flags.DEFINE_string("graph_dir", "./log", "Graph directory.")
 tf.app.flags.DEFINE_boolean("log_parameters", True, "Set to True to show the parameters")
-tf.app.flags.DEFINE_float("learning_rate", 0.003, "The learning rate")
+tf.app.flags.DEFINE_float("learning_rate", 0.005, "The learning rate")
 tf.app.flags.DEFINE_float("keep_prob", 0.6, "To drop out something")
 
 FLAGS = tf.app.flags.FLAGS

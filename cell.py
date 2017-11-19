@@ -44,7 +44,7 @@ class GRUCell(tf.contrib.rnn.RNNCell):
         with tf.variable_scope(scope or "gru_cell", reuse=self._reuse):
             inputs_state = tf.concat([inputs, state], 1)
             W1 = tf.get_variable('weight1', [inputs_state.shape[1], 2*self._num_units], tf.float32)
-            b1 = tf.get_variable('bias1', 2*self._num_units, tf.float32, initializer = tf.ones_initializer)
+            b1 = tf.get_variable('bias1', 2*self._num_units, tf.float32, initializer = tf.constant_initializer(1.0))
             z_r = tf.matmul(inputs_state, W1)+b1
             arrays = tf.split(value=z_r, num_or_size_splits=2, axis=1) 
             z = tf.sigmoid(arrays[0])

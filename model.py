@@ -64,14 +64,14 @@ class RNN(object):
 
         
         if num_layers == 1:
-            #cell = GRUCell(num_units)
-            cell = BasicLSTMCell(num_units, num_units)
+            cell = GRUCell(num_units)
+            #cell = BasicLSTMCell(num_units, num_units)
             #cell = BasicRNNCell(num_units)
         
         print(self.embed_input.shape)
         print(self.texts_length.shape)
-        #outputs, states = dynamic_rnn(cell, self.embed_input, self.texts_length, dtype=tf.float32, scope="rnn")
-        outputs, (_, states) = dynamic_rnn(cell, self.embed_input, self.texts_length, dtype=tf.float32, scope="rnn")
+        outputs, states = dynamic_rnn(cell, self.embed_input, self.texts_length, dtype=tf.float32, scope="rnn")
+        #outputs, (_, states) = dynamic_rnn(cell, self.embed_input, self.texts_length, dtype=tf.float32, scope="rnn")
 
         #todo: implement unfinished networks
         y_drop1 = tf.nn.dropout(states, keep_prob=keep_prob)
@@ -90,9 +90,6 @@ class RNN(object):
         y1 = tf.layers.dense(inputs = y_drop1, units = 128, activation = tf.nn.sigmoid)
         y2 = tf.layers.dense(inputs = y1, units = num_labels)
         logits = y2
-
-        # y_drop2 = tf.nn.dropout(h_relu1, keep_prob=keep_prob)
-        # logits = y_drop2
 
         self.loss = tf.reduce_sum(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=self.labels, logits=logits), name='loss')
         mean_loss = self.loss / tf.cast(tf.shape(self.labels)[0], dtype=tf.float32)
