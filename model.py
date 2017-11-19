@@ -64,14 +64,14 @@ class RNN(object):
 
         
         if num_layers == 1:
-            cell = GRUCell(num_units)
-            #cell = BasicLSTMCell(num_units, num_units)
+            #cell = GRUCell(num_units)
+            cell = BasicLSTMCell(num_units, num_units)
             #cell = BasicRNNCell(num_units)
         
         print(self.embed_input.shape)
         print(self.texts_length.shape)
-        outputs, states = dynamic_rnn(cell, self.embed_input, self.texts_length, dtype=tf.float32, scope="rnn")
-        #outputs, (_, states) = dynamic_rnn(cell, self.embed_input, self.texts_length, dtype=tf.float32, scope="rnn")
+        #outputs, states = dynamic_rnn(cell, self.embed_input, self.texts_length, dtype=tf.float32, scope="rnn")
+        outputs, (_, states) = dynamic_rnn(cell, self.embed_input, self.texts_length, dtype=tf.float32, scope="rnn")
 
         #todo: implement unfinished networks
         y_drop1 = tf.nn.dropout(states, keep_prob=keep_prob)
@@ -87,7 +87,7 @@ class RNN(object):
 
         # logits = tf.matmul(h_relu1, W_fc2) + b_fc2
 
-        y1 = tf.layers.dense(inputs = y_drop1, units = 256, activation = tf.nn.sigmoid)
+        y1 = tf.layers.dense(inputs = y_drop1, units = 128, activation = tf.nn.sigmoid)
         y2 = tf.layers.dense(inputs = y1, units = num_labels)
         logits = y2
 
