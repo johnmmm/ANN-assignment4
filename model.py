@@ -64,30 +64,22 @@ class RNN(object):
 
         
         if num_layers == 1:
+            cell = BasicRNNCell(num_units)
+            outputs, states = dynamic_rnn(cell, self.embed_input, self.texts_length, dtype=tf.float32, scope="rnn")      
+        elif num_layers == 2:
             cell = GRUCell(num_units)
-            #cell = BasicLSTMCell(num_units, num_units)
-            #cell = BasicRNNCell(num_units)
+            outputs, states = dynamic_rnn(cell, self.embed_input, self.texts_length, dtype=tf.float32, scope="rnn")
+        elif num_layers == 3:
+            cell = BasicLSTMCell(num_units, num_units)
+            outputs, (_, states) = dynamic_rnn(cell, self.embed_input, self.texts_length, dtype=tf.float32, scope="rnn")
         
         print(self.embed_input.shape)
         print(self.texts_length.shape)
-        outputs, states = dynamic_rnn(cell, self.embed_input, self.texts_length, dtype=tf.float32, scope="rnn")
-        #outputs, (_, states) = dynamic_rnn(cell, self.embed_input, self.texts_length, dtype=tf.float32, scope="rnn")
-
+        
         #todo: implement unfinished networks
         y_drop1 = tf.nn.dropout(states, keep_prob=keep_prob)
 
-        # W_fc1 = weight_variable([cell.output_size, 300])
-        # b_fc1 = bias_variable([300])
-
-        # h_fc1 = tf.matmul(y_drop1, W_fc1) + b_fc1
-        # h_relu1 = tf.nn.sigmoid(h_fc1)
-
-        # W_fc2 = weight_variable([300, num_labels])
-        # b_fc2 = bias_variable([num_labels])
-
-        # logits = tf.matmul(h_relu1, W_fc2) + b_fc2
-
-        y1 = tf.layers.dense(inputs = y_drop1, units = 128, activation = tf.nn.sigmoid)
+        y1 = tf.layers.dense(inputs = y_drop1, units = 128, activation = tf.nn.relu)
         y2 = tf.layers.dense(inputs = y1, units = num_labels)
         logits = y2
 
